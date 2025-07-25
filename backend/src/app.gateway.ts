@@ -38,28 +38,20 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.broadcastPlayerUpdate();
   }
 
- @SubscribeMessage('join_game')
-handleJoin(client: Socket, username: string) {
-  // Prevent duplicate usernames
-  const nameExists = this.players.some(p => p.username === username);
-  if (nameExists) {
-    client.emit('error_message', 'Username already taken');
-    return;
+  @SubscribeMessage('join_game')
+  handleJoin(client: Socket, username: string) {
+    const player: Player = {
+      id: client.id,
+      username,
+      score: 0,
+    };
+    this.players.push(player);
+    this.broadcastPlayerUpdate();
+
+    if (this.players.length >= this.minPlayers && !this.roundInProgress) {
+      this.startGame();
+    }
   }
-
-  const player: Player = {
-    id: client.id,
-    username,
-    score: 0,
-  };
-  this.players.push(player);
-  this.broadcastPlayerUpdate();
-
-  if (this.players.length >= this.minPlayers && !this.roundInProgress) {
-    this.startGame();
-  }
-}
-
 
   broadcastPlayerUpdate() {
     this.server.emit('player_update', {
