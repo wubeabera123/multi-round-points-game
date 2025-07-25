@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import socket from "./socket";
-import "./App.css";
 
 interface Player {
   id: string;
@@ -150,7 +149,7 @@ function App() {
               <h2 className="text-2xl font-bold text-red-600">🏁 Game Over</h2>
               <h3 className="text-lg">Final Scores:</h3>
               <ul className="bg-white rounded shadow p-4">
-                {players.map((p) => (
+                {players.map((p: Player) => (
                   <li key={p.id} className="flex justify-between border-b py-1">
                     <span>{p.username}</span>
                     <span>{p.score} pts</span>
